@@ -26,38 +26,29 @@ class EEGNet(nn.Module):
         self.conv3 = nn.Conv2d(4, 4, (8, 4))
         self.batchnorm3 = nn.BatchNorm2d(4, False)
         self.pooling3 = nn.MaxPool2d((2, 4))
-
-        # FC Layer
-        # NOTE: This dimension will depend on the number of timestamps per sample in your data.
-        # I have 120 timepoints.
         self.fc1 = nn.Linear(4*2*7, 1)
 
 
     def forward(self, x):
-        # Layer 1
-
         x = _transpose_time_to_spat(x)
 
         x = F.elu(self.conv1(x))
         x = self.batchnorm1(x)
         x = F.dropout(x, 0.25)
         x = x.permute(0, 3, 1, 2)
-
-        # Layer 2
+        
         x = self.padding1(x)
         x = F.elu(self.conv2(x))
         x = self.batchnorm2(x)
         x = F.dropout(x, 0.25)
         x = self.pooling2(x)
 
-        # Layer 3
         x = self.padding2(x)
         x = F.elu(self.conv3(x))
         x = self.batchnorm3(x)
         x = F.dropout(x, 0.25)
         x = self.pooling3(x)
-
-        # FC Layer
+        
         x = x.view(-1, 4*2*7)
         x = F.sigmoid(self.fc1(x))
         return x
