@@ -1,0 +1,6 @@
+json-tricks>=3.11.3
+dill>=0.2.7.1
+mne>=0.15.2
+imbalanced-learn>=0.3.3
+pyriemann>=0.2.5
+braindecode>=0.3.1
